@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -xe
+
+master_hostname=`unit-get private-address`
+master_port=`config-get port`
+
+# Add hostname and port in relationship
+
+relation-set master_hostname="${master_hostname}" master_port="${master_port}"

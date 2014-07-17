@@ -1,0 +1,9 @@
+options:
+  port:
+    default: 6379
+    description: The port redis listens to
+    type: int
+  version:
+    default: 2.8.12
+    description: What version of Redis do you want to install
+    type: string

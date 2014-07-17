@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -xe
+
+port=`config-get port`
+
+# remove master host and port in redis config to make
+# this node a standalone node and restart
+sed -i.bak -e "s/^slaveof /\# slaveof /" /etc/redis/$port.conf
+
+# Check if service is already running and start or restart
+if [[ `service redis_$port status` =~ "Redis is running" ]]
+then
+    service redis_$port restart
+else
+    service redis_$port start
+fi
+
+

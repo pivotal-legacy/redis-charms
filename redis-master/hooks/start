@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -xe
+
+# Get config values
+port=`config-get port`
+isMaster=`config-get master`
+
+# Check if service is already running and start or restart
+if [[ `service redis_$port status` =~ "Redis is running" ]]
+then 
+    service redis_$port restart
+else
+    service redis_$port start
+fi
+

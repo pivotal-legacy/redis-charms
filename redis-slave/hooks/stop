@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -xe
+
+# Get config values
+port=`config-get port`
+
+# stop redis service
+service redis_$port stop

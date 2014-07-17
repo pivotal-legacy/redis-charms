@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -xe
+
+# Get config values
+port=`config-get port`
+isMaster=`config-get master`
+version=`config-get version`
+
+# Download and build redis source package
+apt-get -y update
+apt-get -y install build-essential make
+wget http://download.redis.io/releases/redis-$version.tar.gz
+tar xzf redis-$version.tar.gz
+cd redis-$version
+make
+
+# Finish up by running make install, which installs the program system-wide
+sudo make install
+
+#[ -z  `config-get port` ] && port=6379
+#[ -z  `config-get master` ] && isMaster=true
+
+# Create input file for install_server.sh
+cd utils
+tee input << EOF
+$port
+/etc/redis/$port.conf
+/var/log/redis_$port.log
+/var/lib/redis/$port
+/usr/local/bin/redis-server
+EOF
+
+# Run install_server.sh to create init.d script and set up
+# configuration, logging dir and data dir
+sudo ./install_server.sh < input
+
+
+# Finally open port $port for external connections
+[ -x /usr/bin/open-port ] && open-port $port/TCP || exit 0
